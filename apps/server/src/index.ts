@@ -23,3 +23,5 @@ await server.listen({
   port: 6001,
   host: "0.0.0.0",
 })
+
+export type { AppRouter } from "./appRouter.js"
