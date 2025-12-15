@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 import tailwindcssAnimate from "tailwindcss-animate"
+import safeArea from "tailwindcss-safe-area"
 
 export default {
     darkMode: ['class'],
@@ -55,5 +56,5 @@ export default {
   		}
   	}
   },
-  plugins: [tailwindcssAnimate],
+  plugins: [tailwindcssAnimate, safeArea],
 }
