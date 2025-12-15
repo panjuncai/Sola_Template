@@ -4,6 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "typecheck": "tsc -p tsconfig.json"
+    "build": "node -e \"console.log('packages/shared build: not configured yet')\"",
+    "lint": "node -e \"console.log('packages/shared lint: not configured yet')\"",
+    "type-check": "tsc -p tsconfig.json",
+    "typecheck": "pnpm run type-check"
   }
 }

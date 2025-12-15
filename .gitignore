@@ -39,3 +39,6 @@ coverage/
 .vscode/
 *.swp
 *.swo
+
+# Turborepo
+.turbo/
