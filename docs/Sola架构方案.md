@@ -109,6 +109,55 @@ TypeScript
 </div>
 ```
 
+#### D. UI 基建规范：Mobile-First，同时兼顾桌面
+
+为了把“移动端体验”打磨到极致，同时保证桌面端效率，我会把 UI 基建明确成可执行的工程规则（并沉淀到 `@sola/ui`）。
+
+**断点与布局策略：**
+
+- Mobile-first：默认样式就是移动端样式。
+- `md`（>=768px）：开始出现桌面布局（Sidebar、多列/更宽内容）。
+- `lg`（>=1024px）：提高桌面密度（更宽容器、更复杂布局）。
+
+**组件使用边界（强约束）：**
+
+- 业务代码不直接使用 Radix / Vaul primitives。
+- 业务一律从 `@sola/ui` 引用（例如 `Button` / `AppShell` / `ResponsiveOverlay`），由封装层统一处理样式、可访问性与交互一致性。
+
+**Tokens 与样式约束：**
+
+- 统一使用 shadcn 的 CSS Variables（`--background` / `--foreground` / `--radius`…）+ Tailwind 映射。
+- 新增设计 token：先扩展 CSS variables，再扩展 Tailwind（避免业务里出现“私有颜色体系”）。
+
+**触控与移动端体验：**
+
+- 触控最小高度建议 `44px`（按钮/导航等高频交互区域尽量不小于 `h-11`）。
+- 启用 `touch-action: manipulation`，减少移动端点击延迟。
+
+**Safe Area（刘海屏/圆角屏）与固定区域：**
+
+- `viewport-fit=cover` 允许内容进入刘海区域。
+- 固定底部区域（BottomNav、Drawer）必须包含 `pb-safe`，页面容器可用 `p-safe` 系列工具类。
+
+**滚动策略：**
+
+- 页面整体维持单一主滚动容器（通常是 `main`），固定结构（Header/Sidebar/BottomNav）与主滚动分离，减少 iOS 回弹/焦点滚动异常。
+
+**统一的响应式弹层（业务只写一套）：**
+
+- `md-`：Drawer（底部弹出，触控友好）
+- `md+`：Dialog（居中对话框，键盘/焦点管理更好）
+
+示例（业务侧只写一套）：
+
+```tsx
+<AppShell ...>
+  <ResponsiveOverlay title="Title" description="Desc">
+    <div>Shared content</div>
+  </ResponsiveOverlay>
+</AppShell>
+```
+
 ------
 
 ### 4. 部署与运维：Docker 化与 CI/CD
@@ -137,7 +186,7 @@ TypeScript
 
 1. **地基**：初始化一个 **pnpm workspace**，引入 **TypeScript**。
 2. **搬运逻辑**：把 `textProcessor.js` 移动到 `packages/logic`，改写为 TS，并加上 **Vitest** 单元测试（保证正则永远不出错）。
-3. **重构后端**：初始化 **tRPC + Express**，用 **Drizzle** 替换手写 SQL。
+3. **重构后端**：初始化 **tRPC + Fastify**，用 **Drizzle** 替换手写 SQL。
 4. **重构前端**：引入 **Tailwind + shadcn/ui**，逐步替换 Ant Design 组件；用 `trpc-react` 替换 `axios`。
 5. **发布**：写好 `Dockerfile`，配置 CI/CD。
 

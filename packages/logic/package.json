@@ -4,8 +4,6 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "build": "node -e \"console.log('packages/logic build: not configured yet')\"",
-    "lint": "node -e \"console.log('packages/logic lint: not configured yet')\"",
     "type-check": "tsc -p tsconfig.json",
     "typecheck": "pnpm run type-check"
   }
