@@ -12,7 +12,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@sola/server": "workspace:*",
+    "@sola/api": "workspace:*",
     "@sola/ui": "workspace:*",
     "@tanstack/react-query": "^4.42.0",
     "@trpc/client": "^10.45.3",
