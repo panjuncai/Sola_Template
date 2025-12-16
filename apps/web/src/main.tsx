@@ -8,10 +8,11 @@ import App from './App.tsx'
 import { trpc } from './lib/trpc'
 
 const queryClient = new QueryClient()
+const apiBaseUrl = import.meta.env.VITE_API_URL?.replace(/\/$/, "")
 const trpcClient = trpc.createClient({
   links: [
     httpBatchLink({
-      url: 'http://localhost:6001/trpc',
+      url: !import.meta.env.DEV && apiBaseUrl ? `${apiBaseUrl}/trpc` : "/trpc",
     }),
   ],
 })
