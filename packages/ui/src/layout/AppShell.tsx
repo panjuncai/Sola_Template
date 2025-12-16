@@ -1,5 +1,4 @@
 import * as React from "react"
-import { NavLink } from "react-router-dom"
 
 import { cn } from "../lib/utils"
 import { Button } from "../components/ui/button"
@@ -10,17 +9,33 @@ export type AppNavItem = {
   icon?: React.ReactNode
 }
 
+export type AppShellLinkComponent = React.ComponentType<{
+  to: string
+  className?: string
+  children: React.ReactNode
+  "aria-current"?: "page" | undefined
+}>
+
 export type AppShellProps = {
   brand?: React.ReactNode
   navItems: AppNavItem[]
+  pathname?: string
+  LinkComponent?: AppShellLinkComponent
   header?: React.ReactNode
   children: React.ReactNode
   className?: string
 }
 
+function isActivePath(pathname: string, to: string) {
+  if (to === "/") return pathname === "/"
+  return pathname === to || pathname.startsWith(`${to}/`)
+}
+
 export function AppShell({
   brand = "Sola",
   navItems,
+  pathname,
+  LinkComponent,
   header,
   children,
   className,
@@ -34,30 +49,43 @@ export function AppShell({
           </div>
           <nav className="p-2">
             <div className="grid gap-1">
-              {navItems.map((item) => (
-                <Button
-                  key={item.to}
-                  asChild
-                  variant="ghost"
-                  className="justify-start h-11"
-                >
-                  <NavLink
-                    to={item.to}
-                    className={({ isActive }) =>
-                      cn(
-                        "w-full flex items-center",
-                        isActive && "text-foreground bg-secondary"
-                      )
-                    }
-                    end={item.to === "/"}
+              {navItems.map((item) => {
+                const isActive = pathname ? isActivePath(pathname, item.to) : false
+                const LinkOrAnchor = LinkComponent
+
+                return (
+                  <Button
+                    key={item.to}
+                    asChild
+                    variant={isActive ? "secondary" : "ghost"}
+                    className="justify-start h-11"
                   >
-                    {item.icon ? (
-                      <span className="mr-2">{item.icon}</span>
-                    ) : null}
-                    {item.label}
-                  </NavLink>
-                </Button>
-              ))}
+                    {LinkOrAnchor ? (
+                      <LinkOrAnchor
+                        to={item.to}
+                        className="w-full flex items-center"
+                        aria-current={isActive ? "page" : undefined}
+                      >
+                        {item.icon ? (
+                          <span className="mr-2">{item.icon}</span>
+                        ) : null}
+                        {item.label}
+                      </LinkOrAnchor>
+                    ) : (
+                      <a
+                        href={item.to}
+                        className="w-full flex items-center"
+                        aria-current={isActive ? "page" : undefined}
+                      >
+                        {item.icon ? (
+                          <span className="mr-2">{item.icon}</span>
+                        ) : null}
+                        {item.label}
+                      </a>
+                    )}
+                  </Button>
+                )
+              })}
             </div>
           </nav>
         </aside>
@@ -78,17 +106,20 @@ export function AppShell({
       <nav className="md:hidden fixed inset-x-0 bottom-0 z-40 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 pb-safe">
         <div className="grid grid-flow-col auto-cols-fr h-16">
           {navItems.map((item) => {
-            return (
-              <NavLink
+            const isActive = pathname ? isActivePath(pathname, item.to) : false
+            const LinkOrAnchor = LinkComponent
+
+            const className = cn(
+              "min-h-11 px-2 py-2 flex flex-col items-center justify-center gap-1 text-xs font-medium",
+              isActive ? "text-foreground" : "text-muted-foreground"
+            )
+
+            return LinkOrAnchor ? (
+              <LinkOrAnchor
                 key={item.to}
                 to={item.to}
-                end={item.to === "/"}
-                className={({ isActive }) =>
-                  cn(
-                    "min-h-11 px-2 py-2 flex flex-col items-center justify-center gap-1 text-xs font-medium",
-                    isActive ? "text-foreground" : "text-muted-foreground"
-                  )
-                }
+                className={className}
+                aria-current={isActive ? "page" : undefined}
               >
                 {item.icon ? (
                   <span className="h-5 w-5 flex items-center justify-center">
@@ -96,7 +127,21 @@ export function AppShell({
                   </span>
                 ) : null}
                 <span>{item.label}</span>
-              </NavLink>
+              </LinkOrAnchor>
+            ) : (
+              <a
+                key={item.to}
+                href={item.to}
+                className={className}
+                aria-current={isActive ? "page" : undefined}
+              >
+                {item.icon ? (
+                  <span className="h-5 w-5 flex items-center justify-center">
+                    {item.icon}
+                  </span>
+                ) : null}
+                <span>{item.label}</span>
+              </a>
             )
           })}
         </div>

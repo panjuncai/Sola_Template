@@ -1,4 +1,4 @@
-import { Outlet } from "react-router-dom"
+import { Link, Outlet, useLocation } from "react-router-dom"
 
 import { AppShell } from "@sola/ui"
 
@@ -11,10 +11,14 @@ const navItems = [
 ]
 
 export function AppLayout() {
+  const { pathname } = useLocation()
+
   return (
     <AppShell
       brand="Sola"
       navItems={navItems}
+      pathname={pathname}
+      LinkComponent={Link}
       header={<div className="text-sm text-muted-foreground">Mobile-first UI</div>}
     >
       <Outlet />
