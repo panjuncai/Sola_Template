@@ -1,10 +1,11 @@
 import * as React from "react"
+import { NavLink } from "react-router-dom"
 
 import { cn } from "../lib/utils"
 import { Button } from "../components/ui/button"
 
 export type AppNavItem = {
-  key: string
+  to: string
   label: string
   icon?: React.ReactNode
 }
@@ -12,8 +13,6 @@ export type AppNavItem = {
 export type AppShellProps = {
   brand?: React.ReactNode
   navItems: AppNavItem[]
-  activeKey: string
-  onNavigate: (key: string) => void
   header?: React.ReactNode
   children: React.ReactNode
   className?: string
@@ -22,8 +21,6 @@ export type AppShellProps = {
 export function AppShell({
   brand = "Sola",
   navItems,
-  activeKey,
-  onNavigate,
   header,
   children,
   className,
@@ -39,14 +36,26 @@ export function AppShell({
             <div className="grid gap-1">
               {navItems.map((item) => (
                 <Button
-                  key={item.key}
-                  type="button"
-                  variant={activeKey === item.key ? "secondary" : "ghost"}
+                  key={item.to}
+                  asChild
+                  variant="ghost"
                   className="justify-start h-11"
-                  onClick={() => onNavigate(item.key)}
                 >
-                  {item.icon ? <span className="mr-2">{item.icon}</span> : null}
-                  {item.label}
+                  <NavLink
+                    to={item.to}
+                    className={({ isActive }) =>
+                      cn(
+                        "w-full flex items-center",
+                        isActive && "text-foreground bg-secondary"
+                      )
+                    }
+                    end={item.to === "/"}
+                  >
+                    {item.icon ? (
+                      <span className="mr-2">{item.icon}</span>
+                    ) : null}
+                    {item.label}
+                  </NavLink>
                 </Button>
               ))}
             </div>
@@ -69,17 +78,17 @@ export function AppShell({
       <nav className="md:hidden fixed inset-x-0 bottom-0 z-40 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 pb-safe">
         <div className="grid grid-flow-col auto-cols-fr h-16">
           {navItems.map((item) => {
-            const isActive = activeKey === item.key
             return (
-              <button
-                key={item.key}
-                type="button"
-                onClick={() => onNavigate(item.key)}
-                className={cn(
-                  "min-h-11 px-2 py-2 flex flex-col items-center justify-center gap-1 text-xs font-medium",
-                  isActive ? "text-foreground" : "text-muted-foreground"
-                )}
-                aria-current={isActive ? "page" : undefined}
+              <NavLink
+                key={item.to}
+                to={item.to}
+                end={item.to === "/"}
+                className={({ isActive }) =>
+                  cn(
+                    "min-h-11 px-2 py-2 flex flex-col items-center justify-center gap-1 text-xs font-medium",
+                    isActive ? "text-foreground" : "text-muted-foreground"
+                  )
+                }
               >
                 {item.icon ? (
                   <span className="h-5 w-5 flex items-center justify-center">
@@ -87,7 +96,7 @@ export function AppShell({
                   </span>
                 ) : null}
                 <span>{item.label}</span>
-              </button>
+              </NavLink>
             )
           })}
         </div>

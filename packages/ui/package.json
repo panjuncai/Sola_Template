@@ -15,7 +15,8 @@
   },
   "peerDependencies": {
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "react-router-dom": "^6.0.0"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",
@@ -29,6 +30,7 @@
   "devDependencies": {
     "@types/react": "^19.2.5",
     "@types/react-dom": "^19.2.3",
+    "react-router-dom": "^6.28.0",
     "typescript": "^5.9.3"
   }
 }
