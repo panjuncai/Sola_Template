@@ -1,4 +1,5 @@
 export * from "./components/ui/button"
+export * from "./components/ui/card"
 export * from "./components/ui/dialog"
 export * from "./components/ui/drawer"
 export * from "./components/ResponsiveOverlay"

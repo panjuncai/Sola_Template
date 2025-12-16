@@ -3,10 +3,12 @@ import * as React from "react"
 import { Button, ResponsiveOverlay } from "@sola/ui"
 
 import { trpc } from "@/lib/trpc"
+import { usePlayerStore } from "@/stores/usePlayerStore"
 
 export function DashboardPage() {
   const { data, isLoading } = trpc.health.useQuery()
   const [overlayOpen, setOverlayOpen] = React.useState(false)
+  const { play } = usePlayerStore((state) => state.actions)
 
   return (
     <div className="mx-auto w-full max-w-2xl space-y-6">
@@ -23,6 +25,9 @@ export function DashboardPage() {
         </Button>
         <Button variant="outline" type="button" onClick={() => setOverlayOpen(true)}>
           Open Responsive Overlay
+        </Button>
+        <Button type="button" variant="secondary" onClick={() => play(1)}>
+          Play Demo Article #1
         </Button>
       </div>
 
