@@ -11,6 +11,7 @@ const server = Fastify({
 
 await server.register(cors, {
   origin: true,
+  credentials: true,
 })
 
 await server.register(fastifyTRPCPlugin, {

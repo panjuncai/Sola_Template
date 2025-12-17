@@ -13,6 +13,12 @@ const trpcClient = trpc.createClient({
   links: [
     httpBatchLink({
       url: !import.meta.env.DEV && apiBaseUrl ? `${apiBaseUrl}/trpc` : "/trpc",
+      fetch(url, options) {
+        return fetch(url, {
+          ...options,
+          credentials: "include",
+        })
+      },
     }),
   ],
 })
