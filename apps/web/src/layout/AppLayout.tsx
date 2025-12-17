@@ -5,7 +5,7 @@ import { AppShell } from "@sola/ui"
 import { GlobalPlayer } from "@/components/GlobalPlayer"
 
 const navItems = [
-  { to: "/", label: "Dashboard" },
+  { to: "/dashboard", label: "Dashboard" },
   { to: "/articles", label: "Articles" },
   { to: "/settings", label: "Settings" },
 ]

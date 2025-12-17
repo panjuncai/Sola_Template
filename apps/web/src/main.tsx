@@ -6,6 +6,7 @@ import { httpBatchLink } from '@trpc/client'
 import './index.css'
 import App from './App.tsx'
 import { trpc } from './lib/trpc'
+import { Toaster } from "@sola/ui"
 
 const queryClient = new QueryClient()
 const apiBaseUrl = import.meta.env.VITE_API_URL?.replace(/\/$/, "")
@@ -29,6 +30,7 @@ createRoot(document.getElementById('root')!).render(
       <trpc.Provider client={trpcClient} queryClient={queryClient}>
         <QueryClientProvider client={queryClient}>
           <App />
+          <Toaster />
         </QueryClientProvider>
       </trpc.Provider>
     </BrowserRouter>
