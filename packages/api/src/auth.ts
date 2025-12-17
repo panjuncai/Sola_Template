@@ -9,10 +9,18 @@ const secret =
   process.env.BETTER_AUTH_SECRET ??
   "better-auth-secret-that-is-long-enough-for-dev"
 
+const trustedOrigins = (() => {
+  const env = process.env.BETTER_AUTH_TRUSTED_ORIGINS
+  if (env) return env.split(",").map((s) => s.trim()).filter(Boolean)
+  if (process.env.NODE_ENV === "production") return undefined
+  return ["http://localhost:5173", "http://127.0.0.1:5173"]
+})()
+
 export const auth = betterAuth({
   baseURL,
   basePath,
   secret,
+  trustedOrigins,
   database: drizzleAdapter(db, {
     provider: "sqlite",
     schema: {

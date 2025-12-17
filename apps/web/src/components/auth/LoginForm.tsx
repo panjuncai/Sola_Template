@@ -17,6 +17,7 @@ import {
 
 import { loginSchema } from "@/lib/schemas"
 import { trpc } from "@/lib/trpc"
+import { useAuthStore } from "@/stores/useAuthStore"
 
 export function LoginForm() {
   const navigate = useNavigate()
@@ -24,10 +25,13 @@ export function LoginForm() {
   const utils = trpc.useUtils()
   const signIn = trpc.auth.signIn.useMutation({
     onSuccess: async () => {
-      await utils.auth.getSession.invalidate()
+      // Immediately sync session to avoid redirect loops (AuthGuard) and ensure navigation works.
+      const session = await utils.auth.getSession.fetch().catch(() => null)
+      useAuthStore.getState().setUser(session?.user ?? null)
+      utils.auth.getSession.invalidate()
       toast.success("Signed in")
       const from = (location.state as { from?: string } | null)?.from
-      navigate(from || "/dashboard", { replace: true })
+      navigate(from || "/", { replace: true })
     },
     onError: (err) => {
       toast.error(err.message)

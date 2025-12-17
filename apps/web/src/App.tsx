@@ -12,7 +12,14 @@ import { AuthGuard } from "./components/auth/AuthGuard"
 export default function App() {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/auth/login" replace />} />
+      <Route
+        path="/"
+        element={
+          <AuthGuard>
+            <Navigate to="/dashboard" replace />
+          </AuthGuard>
+        }
+      />
 
       <Route path="/auth" element={<AuthLayout />}>
         <Route path="login" element={<LoginPage />} />
