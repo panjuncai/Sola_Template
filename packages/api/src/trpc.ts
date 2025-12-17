@@ -1,7 +1,9 @@
+import type { IncomingMessage, ServerResponse } from "node:http"
 import { initTRPC } from "@trpc/server"
 
 export type Context = {
-  // Framework-agnostic context (extend later: session, db, etc.)
+  req: IncomingMessage
+  res: ServerResponse
 }
 
 export const t = initTRPC.context<Context>().create()
