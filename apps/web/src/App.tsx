@@ -7,6 +7,7 @@ import { SettingsPage } from "./pages/SettingsPage"
 import { AuthLayout } from "./pages/auth/AuthLayout"
 import { LoginPage } from "./pages/auth/LoginPage"
 import { SignUpPage } from "./pages/auth/SignUpPage"
+import { AuthGuard } from "./components/auth/AuthGuard"
 
 export default function App() {
   return (
@@ -18,7 +19,7 @@ export default function App() {
         <Route path="sign-up" element={<SignUpPage />} />
       </Route>
 
-      <Route element={<AppLayout />}>
+      <Route element={<AuthGuard><AppLayout /></AuthGuard>}>
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/articles" element={<ArticleList />} />
         <Route path="/settings" element={<SettingsPage />} />

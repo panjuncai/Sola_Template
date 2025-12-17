@@ -12,6 +12,7 @@
     }
   },
   "scripts": {
+    "dev": "tsc -p tsconfig.build.json -w --preserveWatchOutput",
     "build": "tsc -p tsconfig.build.json",
     "type-check": "tsc -p tsconfig.json",
     "typecheck": "pnpm run type-check"

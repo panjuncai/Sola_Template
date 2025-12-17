@@ -12,6 +12,7 @@
     }
   },
   "scripts": {
+    "dev": "tsc -p tsconfig.build.json -w --preserveWatchOutput",
     "build": "tsc -p tsconfig.build.json",
     "db:generate": "drizzle-kit generate",
     "db:push": "drizzle-kit push",

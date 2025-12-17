@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Link } from "react-router-dom"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
@@ -16,8 +16,24 @@ import {
 } from "@sola/ui"
 
 import { loginSchema } from "@/lib/schemas"
+import { trpc } from "@/lib/trpc"
 
 export function LoginForm() {
+  const navigate = useNavigate()
+  const location = useLocation()
+  const utils = trpc.useUtils()
+  const signIn = trpc.auth.signIn.useMutation({
+    onSuccess: async () => {
+      await utils.auth.getSession.invalidate()
+      toast.success("Signed in")
+      const from = (location.state as { from?: string } | null)?.from
+      navigate(from || "/dashboard", { replace: true })
+    },
+    onError: (err) => {
+      toast.error(err.message)
+    },
+  })
+
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: { email: "", password: "" },
@@ -26,7 +42,7 @@ export function LoginForm() {
 
   const onSubmit = form.handleSubmit((data) => {
     console.log(data)
-    toast.success("Login Validated")
+    signIn.mutate(data)
   })
 
   return (
@@ -65,7 +81,11 @@ export function LoginForm() {
           )}
         />
 
-        <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
+        <Button
+          type="submit"
+          className="w-full"
+          disabled={form.formState.isSubmitting || signIn.isPending}
+        >
           Sign in
         </Button>
 
@@ -79,4 +99,3 @@ export function LoginForm() {
     </Form>
   )
 }
-

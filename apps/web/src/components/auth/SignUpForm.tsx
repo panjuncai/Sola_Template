@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
@@ -16,8 +16,20 @@ import {
 } from "@sola/ui"
 
 import { signUpSchema } from "@/lib/schemas"
+import { trpc } from "@/lib/trpc"
 
 export function SignUpForm() {
+  const navigate = useNavigate()
+  const signUp = trpc.auth.signUp.useMutation({
+    onSuccess: () => {
+      toast.success("Account created. Check your email to verify.")
+      navigate("/auth/login", { replace: true })
+    },
+    onError: (err) => {
+      toast.error(err.message)
+    },
+  })
+
   const form = useForm<z.infer<typeof signUpSchema>>({
     resolver: zodResolver(signUpSchema),
     defaultValues: { name: "", email: "", password: "" },
@@ -26,7 +38,7 @@ export function SignUpForm() {
 
   const onSubmit = form.handleSubmit((data) => {
     console.log(data)
-    toast.success("Sign Up Validated")
+    signUp.mutate(data)
   })
 
   return (
@@ -79,7 +91,11 @@ export function SignUpForm() {
           )}
         />
 
-        <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
+        <Button
+          type="submit"
+          className="w-full"
+          disabled={form.formState.isSubmitting || signUp.isPending}
+        >
           Create account
         </Button>
 
@@ -93,4 +109,3 @@ export function SignUpForm() {
     </Form>
   )
 }
-

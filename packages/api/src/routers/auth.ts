@@ -4,6 +4,27 @@ import { z } from "zod"
 import { auth, applySetCookieHeaders } from "../auth.js"
 import { router, publicProcedure } from "../trpc.js"
 
+const authUserSchema = z
+  .object({
+    id: z.string(),
+    email: z.string().email(),
+    name: z.string(),
+    image: z.string().nullable().optional(),
+    emailVerified: z.boolean().optional(),
+    createdAt: z.unknown().optional(),
+    updatedAt: z.unknown().optional(),
+  })
+  .passthrough()
+
+const authSessionSchema = z.object({}).passthrough()
+
+const authSessionResponseSchema = z
+  .object({
+    session: authSessionSchema,
+    user: authUserSchema,
+  })
+  .nullable()
+
 function toHeaders(input: import("node:http").IncomingHttpHeaders) {
   const headers = new Headers()
   for (const [key, value] of Object.entries(input)) {
@@ -72,7 +93,7 @@ export const authRouter = router({
     .input(
       z.object({
         email: z.string().email(),
-        password: z.string().min(8),
+        password: z.string().min(1),
         name: z.string().min(1),
       })
     )
@@ -110,9 +131,12 @@ export const authRouter = router({
     })
   }),
 
-  getSession: publicProcedure.query(async ({ ctx }) => {
-    return callAuthEndpoint(ctx, "/get-session", {
-      method: "GET",
-    })
-  }),
+  getSession: publicProcedure
+    .output(authSessionResponseSchema)
+    .query(async ({ ctx }) => {
+      const result = await callAuthEndpoint(ctx, "/get-session", {
+        method: "GET",
+      })
+      return authSessionResponseSchema.parse(result)
+    }),
 })
