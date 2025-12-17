@@ -4,6 +4,8 @@ import fs from "node:fs"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
 
+import * as schema from "./schema.js"
+
 function findPackageRoot(startDir: string) {
   let currentDir = startDir
   for (let i = 0; i < 8; i++) {
@@ -26,6 +28,6 @@ export const dbFilePath =
 
 const sqlite = new Database(dbFilePath)
 
-export const db = drizzle(sqlite)
+export const db = drizzle(sqlite, { schema })
 
 export * from "./schema.js"
