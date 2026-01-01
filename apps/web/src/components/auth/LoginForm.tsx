@@ -41,7 +41,7 @@ export function LoginForm() {
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: { email: "", password: "" },
-    mode: "onChange",
+    mode: "onBlur",
   })
 
   const onSubmit = form.handleSubmit((data) => {
