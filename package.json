@@ -1,5 +1,5 @@
 {
-  "name": "sola",
+  "name": "sola_template",
   "private": true,
   "packageManager": "pnpm@10.0.0",
   "scripts": {
